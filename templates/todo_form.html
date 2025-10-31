@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Edit') if todo else _('Add') }} {{ _('Todo') }} - {{ _('Todo App') }}{% endblock %}
+{% block meta_title %}{{ _('Edit') if todo else _('Add') }} {{ _('Todo') }} - {{ _('Todo App') }}{% endblock %}
+
+{% block page_title %}{{ _('Edit') if todo else _('Add') }} {{ _('Todo') }}{% endblock %}
+{% block breadcrumb %}{{ _('Edit') if todo else _('Add') }} {{ _('Todo') }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _('Edit') if todo else _('Add New') }} {{ _('Todo') }}</h3>
+      </div>
+
+      <form method="post">
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="title" class="form-label">{{ _('Title') }} <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="title"
+              name="title"
+              value="{{ todo.title if todo else '' }}"
+              required
+              maxlength="100"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">{{ _('Description') }}</label>
+            <textarea
+              class="form-control"
+              id="description"
+              name="description"
+              rows="4"
+              maxlength="500"
+            >{{ todo.description if todo else '' }}</textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="due_date" class="form-label">{{ _('Due Date') }}</label>
+            <input
+              type="date"
+              class="form-control"
+              id="due_date"
+              name="due_date"
+              value="{{ todo.due_date.strftime('%Y-%m-%d') if todo and todo.due_date else '' }}"
+            />
+          </div>
+
+          {% if todo %}
+          <div class="mb-3 form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="completed"
+              name="completed"
+              {{ 'checked' if todo.completed else '' }}
+            />
+            <label class="form-check-label" for="completed">
+              {{ _('Mark as completed') }}
+            </label>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> {{ _('Update') if todo else _('Create') }} {{ _('Todo') }}
+          </button>
+          <a href="{{ url_for('index') }}" class="btn btn-secondary ms-2">
+            <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

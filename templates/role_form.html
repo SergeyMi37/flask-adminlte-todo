@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{% if role %}Редактирование роли{% else %}Новая роль{% endif %}{% endblock %}
+{% block page_title %}{% if role %}Редактирование роли{% else %}Новая роль{% endif %}{% endblock %}
+{% block breadcrumb %}{% if role %}Редактирование роли{% else %}Новая роль{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">{% if role %}Редактировать роль{% else %}Создать роль{% endif %}</h3>
+      </div>
+      <form method="post">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="name">Название роли</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ role.name if role else '' }}" required>
+          </div>
+          <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea class="form-control" id="description" name="description" rows="3">{{ role.description if role else '' }}</textarea>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary">{% if role %}Сохранить{% else %}Создать{% endif %}</button>
+          <a href="{{ url_for('manage_roles') }}" class="btn btn-secondary">Отмена</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,518 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-10-31 09:36+0300\n"
+"PO-Revision-Date: 2025-10-30 20:16+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: env/Lib/site-packages/click/_termui_impl.py:608
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#: env/Lib/site-packages/click/_termui_impl.py:612
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:1104
+#: env/Lib/site-packages/click/core.py:1141
+#, python-brace-format
+msgid "{text} {deprecated_message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:1160 templates/base.html:106
+msgid "Options"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:1222
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/Lib/site-packages/click/core.py:1241
+#, python-brace-format
+msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:1425
+msgid "Aborted!"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:1799
+msgid "Commands"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:1830
+msgid "Missing command."
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:1908
+#, python-brace-format
+msgid "No such command {name!r}."
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:2332
+msgid "Value must be an iterable."
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:2355
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/Lib/site-packages/click/core.py:2505
+#, python-brace-format
+msgid ""
+"DeprecationWarning: The {param_type} {name!r} is "
+"deprecated.{extra_message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:2956
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:2959
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:2963
+msgid "required"
+msgstr ""
+
+#: env/Lib/site-packages/click/core.py:3023
+msgid "(dynamic)"
+msgstr ""
+
+#: env/Lib/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: env/Lib/site-packages/click/decorators.py:522
+msgid "Show the version and exit."
+msgstr ""
+
+#: env/Lib/site-packages/click/decorators.py:548
+msgid "Show this message and exit."
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:50
+#: env/Lib/site-packages/click/exceptions.py:89
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:81
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:130
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:132
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:190
+msgid "Missing argument"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:192
+msgid "Missing option"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:194
+msgid "Missing parameter"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:196
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:203
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:223
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:235
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/Lib/site-packages/click/exceptions.py:282
+msgid "unknown error"
+msgstr ""
+
+#: env/Lib/site-packages/click/exceptions.py:289
+#, python-brace-format
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/parser.py:199
+#, python-brace-format
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: env/Lib/site-packages/click/parser.py:381
+#, python-brace-format
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: env/Lib/site-packages/click/parser.py:444
+#, python-brace-format
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/Lib/site-packages/click/shell_completion.py:332
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: env/Lib/site-packages/click/shell_completion.py:339
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: env/Lib/site-packages/click/termui.py:162
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: env/Lib/site-packages/click/termui.py:178
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: env/Lib/site-packages/click/termui.py:180
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+#: env/Lib/site-packages/click/termui.py:191
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: env/Lib/site-packages/click/termui.py:247
+msgid "Error: invalid input"
+msgstr ""
+
+#: env/Lib/site-packages/click/termui.py:866
+msgid "Press any key to continue..."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:332
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:369
+#, python-brace-format
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/Lib/site-packages/click/types.py:460
+#, python-brace-format
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/Lib/site-packages/click/types.py:482
+#, python-brace-format
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:538
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:719
+#, python-brace-format
+msgid "{value!r} is not a valid boolean. Recognized values: {states}"
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:747
+#, python-brace-format
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:937
+msgid "file"
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:939
+msgid "directory"
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:941
+msgid "path"
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:988
+#, python-brace-format
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:997
+#, python-brace-format
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:1005
+#, python-brace-format
+msgid "{name} {filename!r} is a directory."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:1014
+#, python-brace-format
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:1023
+#, python-brace-format
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:1032
+#, python-brace-format
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: env/Lib/site-packages/click/types.py:1099
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/base.html:98 templates/base.html:269
+msgid "Home"
+msgstr ""
+
+#: templates/base.html:109
+msgid "Language"
+msgstr ""
+
+#: templates/base.html:113
+msgid "Theme"
+msgstr ""
+
+#: templates/base.html:114
+msgid "Dark"
+msgstr ""
+
+#: templates/base.html:115
+msgid "Light"
+msgstr ""
+
+#: templates/base.html:117
+msgid "Pagination"
+msgstr ""
+
+#: templates/base.html:118 templates/base.html:119 templates/base.html:120
+#: templates/base.html:121 templates/base.html:122
+msgid "per page"
+msgstr ""
+
+#: templates/base.html:131
+msgid "Logout"
+msgstr ""
+
+#: templates/base.html:148 templates/index.html:3 templates/index.html:4
+#: templates/todo_form.html:3 templates/todo_form.html:4
+msgid "Todo App"
+msgstr ""
+
+#: templates/base.html:169 templates/base.html:270 templates/index.html:3
+#: templates/index.html:4 templates/index.html:8
+msgid "Dashboard"
+msgstr ""
+
+#: templates/base.html:176
+msgid "Todos"
+msgstr ""
+
+#: templates/base.html:184 templates/index.html:141
+msgid "All Todos"
+msgstr ""
+
+#: templates/base.html:190 templates/index.html:144
+msgid "Add Todo"
+msgstr ""
+
+#: templates/base.html:199
+msgid "Development"
+msgstr ""
+
+#: templates/base.html:207
+msgid "Documentation"
+msgstr ""
+
+#: templates/base.html:217
+msgid "Administration"
+msgstr ""
+
+#: templates/base.html:225
+msgid "API Docs"
+msgstr ""
+
+#: templates/base.html:231
+msgid "View Options"
+msgstr ""
+
+#: templates/base.html:237
+msgid "Users"
+msgstr ""
+
+#: templates/base.html:243
+msgid "Roles"
+msgstr ""
+
+#: templates/index.html:19
+msgid "Total Todos"
+msgstr ""
+
+#: templates/index.html:47
+msgid "Completed Todos"
+msgstr ""
+
+#: templates/index.html:75
+msgid "Pending Todos"
+msgstr ""
+
+#: templates/index.html:103
+msgid "Completion Rate"
+msgstr ""
+
+#: templates/index.html:154
+msgid "Show"
+msgstr ""
+
+#: templates/index.html:162 templates/index.html:171
+msgid "entries"
+msgstr ""
+
+#: templates/index.html:170
+msgid "Showing"
+msgstr ""
+
+#: templates/index.html:170
+msgid "to"
+msgstr ""
+
+#: templates/index.html:170
+msgid "of"
+msgstr ""
+
+#: templates/index.html:183 templates/todo_form.html:20
+msgid "Title"
+msgstr ""
+
+#: templates/index.html:184 templates/todo_form.html:33
+msgid "Description"
+msgstr ""
+
+#: templates/index.html:185
+msgid "Status"
+msgstr ""
+
+#: templates/index.html:186 templates/todo_form.html:44
+msgid "Due Date"
+msgstr ""
+
+#: templates/index.html:187
+msgid "Created"
+msgstr ""
+
+#: templates/index.html:188
+msgid "Actions"
+msgstr ""
+
+#: templates/index.html:199
+msgid "Completed"
+msgstr ""
+
+#: templates/index.html:201
+msgid "Pending"
+msgstr ""
+
+#: templates/index.html:225
+msgid "No todos found. "
+msgstr ""
+
+#: templates/index.html:225
+msgid "Create your first todo"
+msgstr ""
+
+#: templates/todo_form.html:3 templates/todo_form.html:4
+#: templates/todo_form.html:6 templates/todo_form.html:7
+#: templates/todo_form.html:14
+msgid "Edit"
+msgstr ""
+
+#: templates/todo_form.html:3 templates/todo_form.html:4
+#: templates/todo_form.html:6 templates/todo_form.html:7
+msgid "Add"
+msgstr ""
+
+#: templates/todo_form.html:3 templates/todo_form.html:4
+#: templates/todo_form.html:6 templates/todo_form.html:7
+#: templates/todo_form.html:14 templates/todo_form.html:72
+msgid "Todo"
+msgstr ""
+
+#: templates/todo_form.html:14
+msgid "Add New"
+msgstr ""
+
+#: templates/todo_form.html:64
+msgid "Mark as completed"
+msgstr ""
+
+#: templates/todo_form.html:72
+msgid "Update"
+msgstr ""
+
+#: templates/todo_form.html:72
+msgid "Create"
+msgstr ""
+
+#: templates/todo_form.html:75
+msgid "Cancel"
+msgstr ""
+

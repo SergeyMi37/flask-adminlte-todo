@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{% if user %}Редактирование пользователя{% else %}Новый пользователь{% endif %}{% endblock %}
+{% block page_title %}{% if user %}Редактирование пользователя{% else %}Новый пользователь{% endif %}{% endblock %}
+{% block breadcrumb %}{% if user %}Редактирование пользователя{% else %}Новый пользователь{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">{% if user %}Редактировать пользователя{% else %}Создать пользователя{% endif %}</h3>
+      </div>
+      <form method="post">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="username">Имя пользователя</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{ user.username if user else '' }}" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ user.email if user else '' }}" required>
+          </div>
+          <div class="form-group">
+            <label for="password">{% if user %}Новый пароль (оставьте пустым, чтобы не менять){% else %}Пароль{% endif %}</label>
+            <input type="password" class="form-control" id="password" name="password" {% if not user %}required{% endif %}>
+          </div>
+          <div class="form-group">
+            <label for="role_id">Роль</label>
+            <select class="form-control" id="role_id" name="role_id" required>
+              {% for role in roles %}
+              <option value="{{ role.id }}" {% if user and user.role_id == role.id %}selected{% endif %}>{{ role.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary">{% if user %}Сохранить{% else %}Создать{% endif %}</button>
+          <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">Отмена</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

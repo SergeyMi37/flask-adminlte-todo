@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="{{ session.get('language', 'ru') }}" data-bs-theme="{{ session.get('theme', 'dark') }}">
+  <!--begin::Head-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}Todo App{% endblock %}</title>
+
+    <!--begin::Accessibility Meta Tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+    <!--end::Accessibility Meta Tags-->
+
+    <!--begin::Primary Meta Tags-->
+    <meta name="title" content="{% block meta_title %}Todo App{% endblock %}" />
+    <meta name="author" content="Your Name" />
+    <meta
+      name="description"
+      content="{% block meta_description %}A simple Todo application with REST API{% endblock %}"
+    />
+    <!--end::Primary Meta Tags-->
+
+    <!--begin::Fonts-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+      integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media='all'"
+    />
+    <!--end::Fonts-->
+
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
+      crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(OverlayScrollbars)-->
+
+    <!--begin::Third Party Plugin(Bootstrap Icons)-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+      crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(Bootstrap Icons)-->
+
+    <!--begin::Required Plugin(AdminLTE)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css') }}" />
+    <!--end::Required Plugin(AdminLTE)-->
+    <!--begin::Custom Themes-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}" />
+    <!--end::Custom Themes-->
+    <style>
+      .dropdown-submenu {
+        position: relative;
+      }
+
+      .dropdown-submenu .submenu {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        display: none;
+        min-width: 150px;
+        z-index: 1050;
+      }
+
+      .dropdown-submenu:hover .submenu {
+        display: block;
+      }
+
+      .dropdown-item.active {
+        background-color: var(--bs-primary);
+        color: white;
+      }
+    </style>
+  </head>
+  <!--end::Head-->
+  <!--begin::Body-->
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <!--begin::App Wrapper-->
+    <div class="app-wrapper">
+      <!--begin::Header-->
+      <nav class="app-header navbar navbar-expand bg-body">
+        <!--begin::Container-->
+        <div class="container-fluid">
+          <!--begin::Start Navbar Links-->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+            <li class="nav-item d-none d-md-block">
+              <a href="{{ url_for('index') }}" class="nav-link">{{ _('Home') }}</a>
+            </li>
+          </ul>
+          <!--end::Start Navbar Links-->
+          <!--begin::End Navbar Links-->
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                <i class="bi bi-gear-fill"></i> {{ _('Options') }}
+              </a>
+              <ul class="dropdown-menu">
+                <li><h6 class="dropdown-header">{{ _('Language') }}</h6></li>
+                <li><a href="{{ url_for('set_language', lang='ru') }}" class="dropdown-item{% if session.get('language', 'ru') == 'ru' %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if session.get('language', 'ru') != 'ru' %} d-none{% endif %}"></i>Русский</a></li>
+                <li><a href="{{ url_for('set_language', lang='en') }}" class="dropdown-item{% if session.get('language', 'ru') == 'en' %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if session.get('language', 'ru') != 'en' %} d-none{% endif %}"></i>English</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">{{ _('Theme') }}</h6></li>
+                <li><a href="{{ url_for('set_theme', theme='dark') }}" class="dropdown-item{% if session.get('theme', 'dark') == 'dark' %} active{% endif %}"><i class="bi bi-moon-fill me-2{% if session.get('theme', 'dark') != 'dark' %} d-none{% endif %}"></i>{{ _('Dark') }}</a></li>
+                <li><a href="{{ url_for('set_theme', theme='light') }}" class="dropdown-item{% if session.get('theme', 'dark') == 'light' %} active{% endif %}"><i class="bi bi-sun-fill me-2{% if session.get('theme', 'dark') != 'light' %} d-none{% endif %}"></i>{{ _('Light') }}</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">{{ _('Pagination') }}</h6></li>
+                <li><a href="{{ url_for('set_pagination', per_page=5) }}" class="dropdown-item{% if per_page == 5 %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if per_page != 5 %} d-none{% endif %}"></i>5 {{ _('per page') }}</a></li>
+                <li><a href="{{ url_for('set_pagination', per_page=10) }}" class="dropdown-item{% if per_page == 10 %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if per_page != 10 %} d-none{% endif %}"></i>10 {{ _('per page') }}</a></li>
+                <li><a href="{{ url_for('set_pagination', per_page=25) }}" class="dropdown-item{% if per_page == 25 %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if per_page != 25 %} d-none{% endif %}"></i>25 {{ _('per page') }}</a></li>
+                <li><a href="{{ url_for('set_pagination', per_page=50) }}" class="dropdown-item{% if per_page == 50 %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if per_page != 50 %} d-none{% endif %}"></i>50 {{ _('per page') }}</a></li>
+                <li><a href="{{ url_for('set_pagination', per_page=100) }}" class="dropdown-item{% if per_page == 100 %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if per_page != 100 %} d-none{% endif %}"></i>100 {{ _('per page') }}</a></li>
+              </ul>
+            </li>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                <i class="bi bi-person-circle"></i> {{ current_user.username }}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="{{ url_for('logout') }}" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>{{ _('Logout') }}</a></li>
+              </ul>
+            </li>
+            {% endif %}
+          </ul>
+          <!--end::End Navbar Links-->
+        </div>
+        <!--end::Container-->
+      </nav>
+      <!--end::Header-->
+      <!--begin::Sidebar-->
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+        <!--begin::Sidebar Brand-->
+        <div class="sidebar-brand">
+          <!--begin::Brand Link-->
+          <a href="{{ url_for('index') }}" class="brand-link">
+            <!--begin::Brand Text-->
+            <span class="brand-text fw-light">{{ _('Todo App') }}</span>
+            <!--end::Brand Text-->
+          </a>
+          <!--end::Brand Link-->
+        </div>
+        <!--end::Sidebar Brand-->
+        <!--begin::Sidebar Wrapper-->
+        <div class="sidebar-wrapper">
+          <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul
+              class="nav sidebar-menu flex-column"
+              data-lte-toggle="treeview"
+              role="navigation"
+              aria-label="Main navigation"
+              data-accordion="false"
+              id="navigation"
+            >
+              <li class="nav-item">
+                <a href="{{ url_for('index') }}" class="nav-link">
+                  <i class="nav-icon bi bi-house-door-fill"></i>
+                  <p>{{ _('Dashboard') }}</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-check-circle-fill"></i>
+                  <p>
+                    {{ _('Todos') }}
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('All Todos') }}</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('new_todo') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('Add Todo') }}</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-code-slash"></i>
+                  <p>
+                    {{ _('Development') }}
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/api/docs" class="nav-link" target="_blank">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('Documentation') }}</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-shield-check"></i>
+                  <p>
+                    {{ _('Administration') }}
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/api/docs" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('API Docs') }}</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('view_options') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('View Options') }}</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('manage_users') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('Users') }}</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('manage_roles') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('Roles') }}</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              {% endif %}
+            </ul>
+            <!--end::Sidebar Menu-->
+          </nav>
+        </div>
+        <!--end::Sidebar Wrapper-->
+      </aside>
+      <!--end::Sidebar-->
+      <!--begin::App Main-->
+      <main class="app-main">
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6">
+                <h3 class="mb-0">{% block page_title %}Dashboard{% endblock %}</h3>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="{{ url_for('index') }}">{{ _('Home') }}</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{% block breadcrumb %}{{ _('Dashboard') }}{% endblock %}</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content-->
+      </main>
+      <!--end::App Main-->
+      <!--begin::Footer-->
+      <footer class="app-footer">
+        <!--begin::To the end-->
+        <div class="float-end d-none d-sm-inline">Todo App v1.0</div>
+        <!--end::To the end-->
+        <!--begin::Copyright-->
+        <strong>
+          Copyright &copy; 2025&nbsp;
+          <a href="#" class="text-decoration-none">Your Company</a>.
+        </strong>
+        All rights reserved.
+        <!--end::Copyright-->
+      </footer>
+      <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+    <!--begin::Script-->
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+    <script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+    <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+    <script>
+      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+      const Default = {
+        scrollbarTheme: 'os-theme-light',
+        scrollbarAutoHide: 'leave',
+        scrollbarClickScroll: true,
+      };
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+
+        // Disable OverlayScrollbars on mobile devices to prevent touch interference
+        const isMobile = window.innerWidth <= 992;
+
+        if (
+          sidebarWrapper &&
+          OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+          !isMobile
+        ) {
+          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: Default.scrollbarTheme,
+              autoHide: Default.scrollbarAutoHide,
+              clickScroll: Default.scrollbarClickScroll,
+            },
+          });
+        }
+
+        // Handle submenu dropdowns
+        const submenus = document.querySelectorAll('.dropdown-submenu');
+        submenus.forEach(submenu => {
+          submenu.addEventListener('mouseenter', function () {
+            const subMenu = this.querySelector('.submenu');
+            if (subMenu) {
+              subMenu.style.display = 'block';
+            }
+          });
+
+          submenu.addEventListener('mouseleave', function () {
+            const subMenu = this.querySelector('.submenu');
+            if (subMenu) {
+              subMenu.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // Function to change items per page
+      function changePerPage(perPage) {
+        const url = new URL(window.location);
+        url.searchParams.set('per_page', perPage);
+        url.searchParams.set('page', '1'); // Reset to first page
+        window.location.href = url.toString();
+      }
+    </script>
+    <!--end::OverlayScrollbars Configure-->
+    {% block extra_js %}{% endblock %}
+    <!--end::Script-->
+  </body>
+  <!--end::Body-->
+</html>
