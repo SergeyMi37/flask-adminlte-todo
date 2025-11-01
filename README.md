@@ -537,6 +537,7 @@ http {
 ## 🙏 Благодарности
 
 - [AdminLTE](https://adminlte.io/) - Отличный бесплатный шаблон админ-панели
+- [Documentation](https://adminlte.io/docs/3.2/components/miscellaneous.html) - Документация по версии 3.1
 - [Flask](https://flask.palletsprojects.com/) - Легковесный веб-фреймворк
 - [Flask-RESTX](https://flask-restx.readthedocs.io/) - Расширение для создания REST API
 - [SQLAlchemy](https://sqlalchemy.org/) - ORM для работы с базами данных
