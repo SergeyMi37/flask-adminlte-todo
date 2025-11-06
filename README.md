@@ -47,7 +47,7 @@
    docker-compose up -d
    ```
 
-   Приложение будет доступно по адресу: http://localhost:5000
+   Приложение будет доступно по адресу: http://localhost:5000/dashboard
 
 #### Команды Docker Compose
 
@@ -84,12 +84,12 @@ docker-compose exec todo-app flask db migrate -m "Your migration message"
 2. **Создайте виртуальное окружение:**
    ```bash
    # Linux/Mac
-   python3 -m venv env
-   source env/bin/activate
+   python3 -m venv env-lin
+   source env-lin/bin/activate
 
    # Windows
-   python -m venv env
-   source env/Scripts/activate
+   python -m venv env-win
+   source env-win/Scripts/activate
    ```
 
 3. **Установите зависимости:**
@@ -99,9 +99,9 @@ docker-compose exec todo-app flask db migrate -m "Your migration message"
 
 4. **Настройте переменные окружения:**
 
-   Создайте файл `.env` на основе `.env.example`:
+   Создайте файл `.env` на основе `env.sapmle`:
    ```bash
-   cp .env.example .env
+   cp env.sapmle .env
    ```
 
    Отредактируйте `.env` файл:
@@ -120,11 +120,11 @@ docker-compose exec todo-app flask db migrate -m "Your migration message"
 5. **Запустите приложение:**
    ```bash
    python app.py
+   или
+   flask run --host=0.0.0.0 --port=5000
    ```
 
-   Приложение будет доступно по адресу: http://localhost:5000
-
-## 📖 Использование
+  ## 📖 Использование
 
 ### Веб-интерфейс
 
