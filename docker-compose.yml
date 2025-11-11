@@ -9,7 +9,8 @@ services:
       - FLASK_APP=app.py
       - FLASK_ENV=production
       - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
-      - DATABASE_URL=sqlite:///instance/todo.db
+      # - DATABASE_URL=sqlite:///instance/todo.db
+      - DATABASE_URL=postgres://postgres_user:postgres_pass@postgres:5432/todo_db
     volumes:
       - ./instance:/app/instance
       - ./migrations:/app/migrations
@@ -23,23 +24,23 @@ services:
     networks:
       - todo-network
 
-  # Optional: PostgreSQL database service
-  # Uncomment and configure if using PostgreSQL
-  # postgres:
-  #   image: postgres:15-alpine
-  #   environment:
-  #     POSTGRES_DB: todo_db
-  #     POSTGRES_USER: todo_user
-  #     POSTGRES_PASSWORD: todo_password
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   restart: unless-stopped
-  #   networks:
-  #     - todo-network
+  Optional: PostgreSQL database service
+  Uncomment and configure if using PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: todo_db
+      POSTGRES_USER: todo_user
+      POSTGRES_PASSWORD: todo_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - todo-network
 
 networks:
   todo-network:
     driver: bridge
 
-# volumes:
-#   postgres_data:
+volumes:
+  postgres_data:
