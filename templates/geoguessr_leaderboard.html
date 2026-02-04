@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('GeoGuessr Leaderboard') }}{% endblock %}
+{% block page_title %}{{ _('GeoGuessr Leaderboard') }}{% endblock %}
+{% block breadcrumb %}{{ _('Leaderboard') }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _('Top Players') }}</h3>
+        <div class="card-tools">
+          <a href="{{ url_for('geoguessr_game') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-play-circle"></i> {{ _('Play Game') }}
+          </a>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 10px">#</th>
+              <th>{{ _('Player') }}</th>
+              <th>{{ _('Score') }}</th>
+              <th>{{ _('Games Played') }}</th>
+              <th>{{ _('Average Score') }}</th>
+              <th>{{ _('Date') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if scores %}
+              {% for score in scores %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                  {% if loop.index == 1 %}
+                    <i class="bi bi-trophy-fill text-warning"></i>
+                  {% elif loop.index == 2 %}
+                    <i class="bi bi-trophy-fill text-secondary"></i>
+                  {% elif loop.index == 3 %}
+                    <i class="bi bi-trophy-fill text-danger"></i>
+                  {% endif %}
+                  {{ score.user.username }}
+                </td>
+                <td><span class="badge bg-success">{{ score.total_score }}</span></td>
+                <td>{{ score.games_played }}</td>
+                <td>{{ (score.total_score / score.games_played)|round(0)|int }}</td>
+                <td>{{ score.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center text-muted">
+                  {{ _('No scores yet. Be the first to play!') }}
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _('Your Statistics') }}</h3>
+      </div>
+      <div class="card-body">
+        {% if current_user.is_authenticated %}
+          {% if user_stats %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="info-box">
+                  <span class="info-box-icon bg-info"><i class="bi bi-controller"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">{{ _('Games Played') }}</span>
+                    <span class="info-box-number">{{ user_stats.games_played }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-box">
+                  <span class="info-box-icon bg-success"><i class="bi bi-star-fill"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">{{ _('Best Score') }}</span>
+                    <span class="info-box-number">{{ user_stats.best_score }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="info-box">
+                  <span class="info-box-icon bg-warning"><i class="bi bi-graph-up"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">{{ _('Average Score') }}</span>
+                    <span class="info-box-number">{{ user_stats.avg_score|round(0)|int }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-box">
+                  <span class="info-box-icon bg-danger"><i class="bi bi-trophy"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">{{ _('Rank') }}</span>
+                    <span class="info-box-number">#{{ user_stats.rank }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <p class="text-muted">{{ _('You haven\'t played any games yet.') }}</p>
+            <a href="{{ url_for('geoguessr_game') }}" class="btn btn-primary">
+              <i class="bi bi-play-circle"></i> {{ _('Start Playing') }}
+            </a>
+          {% endif %}
+        {% else %}
+          <p class="text-muted">{{ _('Please log in to see your statistics.') }}</p>
+          <a href="{{ url_for('login') }}" class="btn btn-primary">
+            <i class="bi bi-box-arrow-in-right"></i> {{ _('Login') }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _('How to Play') }}</h3>
+      </div>
+      <div class="card-body">
+        <ol>
+          <li>{{ _('You will be shown 5 random locations using Google Street View') }}</li>
+          <li>{{ _('Explore the area and look for clues (signs, architecture, nature, etc.)') }}</li>
+          <li>{{ _('Click on the map to place your guess') }}</li>
+          <li>{{ _('Submit your answer to see how close you were') }}</li>
+          <li>{{ _('The closer your guess, the more points you earn!') }}</li>
+        </ol>
+        
+        <h5 class="mt-3">{{ _('Scoring') }}</h5>
+        <ul>
+          <li>{{ _('Maximum 5,000 points per round') }}</li>
+          <li>{{ _('Total maximum: 25,000 points') }}</li>
+          <li>{{ _('Distance affects your score exponentially') }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -516,3 +516,145 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+# GeoGuessr translations
+msgid "GeoGuessr Free"
+msgstr "GeoGuessr Free"
+
+msgid "Play Game"
+msgstr "Play Game"
+
+msgid "Leaderboard"
+msgstr "Leaderboard"
+
+msgid "Guess the Location"
+msgstr "Guess the Location"
+
+msgid "Round"
+msgstr "Round"
+
+msgid "Score"
+msgstr "Score"
+
+msgid "Make Your Guess"
+msgstr "Make Your Guess"
+
+msgid "Submit Guess"
+msgstr "Submit Guess"
+
+msgid "Next Round"
+msgstr "Next Round"
+
+msgid "Finish Game"
+msgstr "Finish Game"
+
+msgid "Game Info"
+msgstr "Game Info"
+
+msgid "Distance"
+msgstr "Distance"
+
+msgid "Round Score"
+msgstr "Round Score"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Explore the Street View"
+msgstr "Explore the Street View"
+
+msgid "Click on the map to guess"
+msgstr "Click on the map to guess"
+
+msgid "Submit your answer"
+msgstr "Submit your answer"
+
+msgid "See your score!"
+msgstr "See your score!"
+
+msgid "Game Results"
+msgstr "Game Results"
+
+msgid "Final Score"
+msgstr "Final Score"
+
+msgid "out of 25000 points"
+msgstr "out of 25000 points"
+
+msgid "Round Details"
+msgstr "Round Details"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Play Again"
+msgstr "Play Again"
+
+msgid "View Leaderboard"
+msgstr "View Leaderboard"
+
+msgid "Please place a marker on the map!"
+msgstr "Please place a marker on the map!"
+
+msgid "GeoGuessr Leaderboard"
+msgstr "GeoGuessr Leaderboard"
+
+msgid "Top Players"
+msgstr "Top Players"
+
+msgid "Player"
+msgstr "Player"
+
+msgid "Games Played"
+msgstr "Games Played"
+
+msgid "Average Score"
+msgstr "Average Score"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "No scores yet. Be the first to play!"
+msgstr "No scores yet. Be the first to play!"
+
+msgid "Your Statistics"
+msgstr "Your Statistics"
+
+msgid "Best Score"
+msgstr "Best Score"
+
+msgid "Rank"
+msgstr "Rank"
+
+msgid "You haven't played any games yet."
+msgstr "You haven't played any games yet."
+
+msgid "Start Playing"
+msgstr "Start Playing"
+
+msgid "Please log in to see your statistics."
+msgstr "Please log in to see your statistics."
+
+msgid "How to Play"
+msgstr "How to Play"
+
+msgid "You will be shown 5 random locations using Google Street View"
+msgstr "You will be shown 5 random locations using Google Street View"
+
+msgid "Explore the area and look for clues (signs, architecture, nature, etc.)"
+msgstr "Explore the area and look for clues (signs, architecture, nature, etc.)"
+
+msgid "The closer your guess, the more points you earn!"
+msgstr "The closer your guess, the more points you earn!"
+
+msgid "Scoring"
+msgstr "Scoring"
+
+msgid "Maximum 5,000 points per round"
+msgstr "Maximum 5,000 points per round"
+
+msgid "Total maximum: 25,000 points"
+msgstr "Total maximum: 25,000 points"
+
+msgid "Distance affects your score exponentially"
+msgstr "Distance affects your score exponentially"
+

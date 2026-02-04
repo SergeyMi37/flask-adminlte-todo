@@ -830,3 +830,145 @@ msgstr "Новый пароль (оставьте пустым, чтобы не 
 msgid "Password"
 msgstr "Пароль"
 
+# GeoGuessr translations
+msgid "GeoGuessr Free"
+msgstr "GeoGuessr Бесплатно"
+
+msgid "Play Game"
+msgstr "Играть"
+
+msgid "Leaderboard"
+msgstr "Таблица лидеров"
+
+msgid "Guess the Location"
+msgstr "Угадайте местоположение"
+
+msgid "Round"
+msgstr "Раунд"
+
+msgid "Score"
+msgstr "Очки"
+
+msgid "Make Your Guess"
+msgstr "Сделайте свою догадку"
+
+msgid "Submit Guess"
+msgstr "Отправить ответ"
+
+msgid "Next Round"
+msgstr "Следующий раунд"
+
+msgid "Finish Game"
+msgstr "Завершить игру"
+
+msgid "Game Info"
+msgstr "Информация об игре"
+
+msgid "Distance"
+msgstr "Расстояние"
+
+msgid "Round Score"
+msgstr "Очки за раунд"
+
+msgid "Instructions"
+msgstr "Инструкции"
+
+msgid "Explore the Street View"
+msgstr "Исследуйте Street View"
+
+msgid "Click on the map to guess"
+msgstr "Кликните на карту для догадки"
+
+msgid "Submit your answer"
+msgstr "Отправьте свой ответ"
+
+msgid "See your score!"
+msgstr "Посмотрите свои очки!"
+
+msgid "Game Results"
+msgstr "Результаты игры"
+
+msgid "Final Score"
+msgstr "Финальный счет"
+
+msgid "out of 25000 points"
+msgstr "из 25000 очков"
+
+msgid "Round Details"
+msgstr "Детали раундов"
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Play Again"
+msgstr "Играть снова"
+
+msgid "View Leaderboard"
+msgstr "Посмотреть таблицу лидеров"
+
+msgid "Please place a marker on the map!"
+msgstr "Пожалуйста, поставьте маркер на карте!"
+
+msgid "GeoGuessr Leaderboard"
+msgstr "Таблица лидеров GeoGuessr"
+
+msgid "Top Players"
+msgstr "Лучшие игроки"
+
+msgid "Player"
+msgstr "Игрок"
+
+msgid "Games Played"
+msgstr "Игр сыграно"
+
+msgid "Average Score"
+msgstr "Средний счет"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "No scores yet. Be the first to play!"
+msgstr "Пока нет результатов. Будьте первым!"
+
+msgid "Your Statistics"
+msgstr "Ваша статистика"
+
+msgid "Best Score"
+msgstr "Лучший результат"
+
+msgid "Rank"
+msgstr "Ранг"
+
+msgid "You haven't played any games yet."
+msgstr "Вы еще не играли."
+
+msgid "Start Playing"
+msgstr "Начать играть"
+
+msgid "Please log in to see your statistics."
+msgstr "Пожалуйста, войдите, чтобы увидеть свою статистику."
+
+msgid "How to Play"
+msgstr "Как играть"
+
+msgid "You will be shown 5 random locations using Google Street View"
+msgstr "Вам будут показаны 5 случайных локаций с помощью Google Street View"
+
+msgid "Explore the area and look for clues (signs, architecture, nature, etc.)"
+msgstr "Исследуйте местность и ищите подсказки (знаки, архитектура, природа и т.д.)"
+
+msgid "The closer your guess, the more points you earn!"
+msgstr "Чем ближе ваша догадка, тем больше очков вы получите!"
+
+msgid "Scoring"
+msgstr "Подсчет очков"
+
+msgid "Maximum 5,000 points per round"
+msgstr "Максимум 5,000 очков за раунд"
+
+msgid "Total maximum: 25,000 points"
+msgstr "Общий максимум: 25,000 очков"
+
+msgid "Distance affects your score exponentially"
+msgstr "Расстояние влияет на ваш счет экспоненциально"
+

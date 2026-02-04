@@ -51,13 +51,11 @@ def get_locale():
         lang = session.get('language')
         logger.debug(f"get_locale from session: {lang}")
         if not lang:
-            # Если в сессии нет, загружаем из Options
-            lang = get_option('language', category='user_settings')
-            logger.debug(f"get_locale from options: {lang}")
-        if not lang:
-            # Если в Options нет, используем принятые языки браузера
+            # Если в сессии нет, используем принятые языки браузера
             lang = request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES'])
             logger.debug(f"get_locale from browser: {lang}")
+        if not lang:
+            lang = app.config['BABEL_DEFAULT_LOCALE']
         logger.debug(f"get_locale returning: {lang}")
         return lang
     except Exception as e:
@@ -69,16 +67,17 @@ babel.init_app(app, locale_selector=get_locale)
 @app.before_request
 def load_user_settings():
     """Загружаем пользовательские настройки перед каждым запросом"""
+    # Устанавливаем значения по умолчанию, если они не установлены
     if 'language' not in session:
-        session['language'] = get_option('language', category='user_settings')
+        session['language'] = app.config['BABEL_DEFAULT_LOCALE']
     if 'theme' not in session:
-        session['theme'] = get_option('theme', category='user_settings')
+        session['theme'] = 'dark'
     if 'per_page' not in session:
-        session['per_page'] = get_option('per_page', category='user_settings')
+        session['per_page'] = 10
     
     # Обновляем локаль для Babel, если язык в сессии изменился
     from flask import g
-    g.babel_locale = session.get('language', get_option('language', category='user_settings'))
+    g.babel_locale = session.get('language', app.config['BABEL_DEFAULT_LOCALE'])
 
 # Удаляем дублирующиеся определения функций и инициализаций
 # Все необходимые функции и инициализации уже определены ранее
@@ -91,37 +90,37 @@ def is_admin():
     """Проверяет, является ли текущий пользователь администратором"""
     return current_user.is_authenticated and current_user.role.name == 'admin'
 
-# Helper functions for Options
-def get_option(name, default=None, user_id=None, category=None):
-    option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
-    result = option.value if option else default
-    logger.debug(f"Getting option: {name} = {result} (category: {category})")
-    return result
+# Helper functions for Options (DEPRECATED - now using localStorage)
+# def get_option(name, default=None, user_id=None, category=None):
+#     option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
+#     result = option.value if option else default
+#     logger.debug(f"Getting option: {name} = {result} (category: {category})")
+#     return result
 
-@app.template_global()
-def get_option(name, default=None, user_id=None, category=None):
-    option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
-    result = option.value if option else default
-    logger.debug(f"Getting option: {name} = {result} (category: {category})")
-    return result
+# @app.template_global()
+# def get_option(name, default=None, user_id=None, category=None):
+#     option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
+#     result = option.value if option else default
+#     logger.debug(f"Getting option: {name} = {result} (category: {category})")
+#     return result
 
 @app.template_global()
 def get_g_value(attr_name, default=None):
     from flask import g
     return getattr(g, attr_name, default)
 
-def set_option(name, value, description='', user_id=None, category=None):
-    logger.debug(f"Setting option: {name} = {value} (category: {category})")
-    option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
-    if option:
-        logger.debug(f"Updating existing option: {option.value} -> {value}")
-        option.value = value
-        option.description = description
-    else:
-        logger.debug(f"Creating new option: {name} = {value}")
-        option = Options(name=name, value=value, description=description, user_id=user_id, category=category)
-        db.session.add(option)
-    db.session.commit()
+# def set_option(name, value, description='', user_id=None, category=None):
+#     logger.debug(f"Setting option: {name} = {value} (category: {category})")
+#     option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
+#     if option:
+#         logger.debug(f"Updating existing option: {option.value} -> {value}")
+#         option.value = value
+#         option.description = description
+#     else:
+#         logger.debug(f"Creating new option: {name} = {value}")
+#         option = Options(name=name, value=value, description=description, user_id=user_id, category=category)
+#         db.session.add(option)
+#     db.session.commit()
 
 # Flask-RESTX API setup
 api = Api(app, version='1.0', title='Todo API',
@@ -250,6 +249,25 @@ class Options(db.Model):
             'user_id': self.user_id,
             'category': self.category,
             'value': self.value
+        }
+
+# GeoGuessr Score Model
+class GeoGuessrScore(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('geoguessr_scores', lazy=True))
+    total_score = db.Column(db.Integer, nullable=False)
+    games_played = db.Column(db.Integer, default=1)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'user': self.user.to_dict() if self.user else None,
+            'total_score': self.total_score,
+            'games_played': self.games_played,
+            'created_at': self.created_at.isoformat()
         }
 
 # API Routes
@@ -544,7 +562,6 @@ class TodoItem(Resource):
 def set_language(lang):
     if lang in app.config['BABEL_SUPPORTED_LOCALES']:
         session['language'] = lang
-        set_option('language', lang, _('Selected interface language'), category='user_settings')
     else:
         logger.warning(f"Invalid language requested: {lang}")
     
@@ -567,14 +584,12 @@ def set_language(lang):
 def set_theme(theme):
     if theme in ['light', 'dark']:
         session['theme'] = theme
-        set_option('theme', theme, 'Выбранная тема интерфейса', category='user_settings')
     return redirect(request.referrer or url_for('index'))
 
 @app.route('/pagination/<int:per_page>')
 def set_pagination(per_page):
     if per_page in [5, 10, 25, 50, 100]:
         session['per_page'] = per_page
-        set_option('per_page', str(per_page), 'Количество элементов на странице', category='user_settings')
     return redirect(request.referrer or url_for('index'))
 
 @app.route('/options')
@@ -807,12 +822,8 @@ def logout():
 def index():
     # Параметры пагинации
     page = request.args.get('page', 1, type=int)
-    # Загружаем per_page из Options или сессии, по умолчанию 10
-    per_page_value = get_option('per_page', session.get('per_page', 10), category='user_settings')
-    if per_page_value is not None:
-        per_page = int(per_page_value)
-    else:
-        per_page = 10
+    # Загружаем per_page из сессии, по умолчанию 10
+    per_page = session.get('per_page', 10)
 
     # Если per_page из query string, используем его (но не сохраняем)
     query_per_page = request.args.get('per_page', type=int)
@@ -896,6 +907,64 @@ def toggle_todo(id):
         todo.due_date = None  # Убираем дату выполнения
     db.session.commit()
     return redirect(url_for('index'))
+
+# GeoGuessr Routes
+@app.route('/geoguessr')
+def geoguessr_game():
+    return render_template('geoguessr_game.html')
+
+@app.route('/geoguessr/leaderboard')
+def geoguessr_leaderboard():
+    # Получаем топ-100 результатов
+    scores = GeoGuessrScore.query.order_by(GeoGuessrScore.total_score.desc()).limit(100).all()
+    
+    # Статистика текущего пользователя
+    user_stats = None
+    if current_user.is_authenticated:
+        user_scores = GeoGuessrScore.query.filter_by(user_id=current_user.id).all()
+        if user_scores:
+            total_games = len(user_scores)
+            total_score = sum(s.total_score for s in user_scores)
+            best_score = max(s.total_score for s in user_scores)
+            avg_score = total_score / total_games if total_games > 0 else 0
+            
+            # Определяем ранг пользователя
+            all_best_scores = db.session.query(
+                GeoGuessrScore.user_id,
+                db.func.max(GeoGuessrScore.total_score).label('best')
+            ).group_by(GeoGuessrScore.user_id).order_by(db.text('best DESC')).all()
+            
+            rank = 1
+            for idx, (uid, score) in enumerate(all_best_scores, 1):
+                if uid == current_user.id:
+                    rank = idx
+                    break
+            
+            user_stats = {
+                'games_played': total_games,
+                'best_score': best_score,
+                'avg_score': avg_score,
+                'rank': rank
+            }
+    
+    return render_template('geoguessr_leaderboard.html', scores=scores, user_stats=user_stats)
+
+@app.route('/geoguessr/save_score', methods=['POST'])
+@login_required
+def save_geoguessr_score():
+    data = request.get_json()
+    total_score = data.get('total_score', 0)
+    
+    # Сохраняем результат
+    score = GeoGuessrScore(
+        user_id=current_user.id,
+        total_score=total_score,
+        games_played=1
+    )
+    db.session.add(score)
+    db.session.commit()
+    
+    return {'status': 'success', 'score_id': score.id}
 
 if __name__ == '__main__':
     with app.app_context():

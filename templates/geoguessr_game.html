@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('GeoGuessr Free') }}{% endblock %}
+{% block page_title %}{{ _('GeoGuessr Free') }}{% endblock %}
+{% block breadcrumb %}{{ _('GeoGuessr Free') }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _('Guess the Location') }}</h3>
+        <div class="card-tools">
+          <span class="badge bg-primary">{{ _('Round') }}: <span id="current-round">1</span>/5</span>
+          <span class="badge bg-success ms-2">{{ _('Score') }}: <span id="total-score">0</span></span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <!-- Панорама Google Street View -->
+        <div id="street-view" style="width: 100%; height: 600px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _('Make Your Guess') }}</h3>
+      </div>
+      <div class="card-body p-0">
+        <!-- Карта для выбора местоположения -->
+        <div id="guess-map" style="width: 100%; height: 400px;"></div>
+      </div>
+      <div class="card-footer">
+        <button id="submit-guess" class="btn btn-primary">
+          <i class="bi bi-check-circle"></i> {{ _('Submit Guess') }}
+        </button>
+        <button id="next-round" class="btn btn-success d-none">
+          <i class="bi bi-arrow-right"></i> {{ _('Next Round') }}
+        </button>
+        <button id="finish-game" class="btn btn-warning d-none">
+          <i class="bi bi-flag"></i> {{ _('Finish Game') }}
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _('Game Info') }}</h3>
+      </div>
+      <div class="card-body">
+        <div class="info-box mb-3">
+          <span class="info-box-icon bg-info"><i class="bi bi-geo-alt"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">{{ _('Distance') }}</span>
+            <span class="info-box-number" id="distance-display">-</span>
+          </div>
+        </div>
+        
+        <div class="info-box mb-3">
+          <span class="info-box-icon bg-success"><i class="bi bi-star"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">{{ _('Round Score') }}</span>
+            <span class="info-box-number" id="round-score">-</span>
+          </div>
+        </div>
+        
+        <div class="progress mb-3">
+          <div id="progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">20%</div>
+        </div>
+        
+        <h5>{{ _('Instructions') }}</h5>
+        <ul class="list-unstyled">
+          <li><i class="bi bi-1-circle text-primary"></i> {{ _('Explore the Street View') }}</li>
+          <li><i class="bi bi-2-circle text-primary"></i> {{ _('Click on the map to guess') }}</li>
+          <li><i class="bi bi-3-circle text-primary"></i> {{ _('Submit your answer') }}</li>
+          <li><i class="bi bi-4-circle text-primary"></i> {{ _('See your score!') }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно результатов -->
+<div class="modal fade" id="results-modal" tabindex="-1" aria-labelledby="resultsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="resultsModalLabel">{{ _('Game Results') }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <h2>{{ _('Final Score') }}: <span id="final-score" class="text-success">0</span></h2>
+          <p class="text-muted">{{ _('out of 25000 points') }}</p>
+        </div>
+        
+        <h5>{{ _('Round Details') }}</h5>
+        <div id="rounds-summary" class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>{{ _('Round') }}</th>
+                <th>{{ _('Distance') }}</th>
+                <th>{{ _('Score') }}</th>
+              </tr>
+            </thead>
+            <tbody id="rounds-table-body">
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
+        <a href="{{ url_for('geoguessr_game') }}" class="btn btn-primary">{{ _('Play Again') }}</a>
+        <a href="{{ url_for('geoguessr_leaderboard') }}" class="btn btn-success">{{ _('View Leaderboard') }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry"></script>
+
+<script>
+let streetViewPanorama;
+let guessMap;
+let guessMarker;
+let currentRound = 1;
+let totalScore = 0;
+let roundsData = [];
+let currentLocation;
+
+// Список случайных локаций для игры
+const gameLocations = [
+  { lat: 48.8584, lng: 2.2945 }, // Париж, Эйфелева башня
+  { lat: 40.7580, lng: -73.9855 }, // Нью-Йорк, Таймс-сквер
+  { lat: 51.5007, lng: -0.1246 }, // Лондон, Биг-Бен
+  { lat: 35.6762, lng: 139.6503 }, // Токио
+  { lat: -33.8688, lng: 151.2093 }, // Сидней, Опера
+  { lat: 41.8902, lng: 12.4922 }, // Рим, Колизей
+  { lat: 55.7558, lng: 37.6173 }, // Москва, Красная площадь
+  { lat: 37.9838, lng: 23.7275 }, // Афины, Акрополь
+  { lat: 25.1972, lng: 55.2744 }, // Дубай
+  { lat: -22.9519, lng: -43.2105 }, // Рио-де-Жанейро
+];
+
+function initGame() {
+  // Инициализация Street View
+  const streetViewDiv = document.getElementById('street-view');
+  currentLocation = getRandomLocation();
+  
+  streetViewPanorama = new google.maps.StreetViewPanorama(streetViewDiv, {
+    position: currentLocation,
+    pov: { heading: 165, pitch: 0 },
+    zoom: 1,
+    addressControl: false,
+    showRoadLabels: false,
+    zoomControl: true,
+    fullscreenControl: true
+  });
+
+  // Инициализация карты для угадывания
+  const mapDiv = document.getElementById('guess-map');
+  guessMap = new google.maps.Map(mapDiv, {
+    center: { lat: 20, lng: 0 },
+    zoom: 2,
+    streetViewControl: false
+  });
+
+  // Добавление маркера при клике на карту
+  guessMap.addListener('click', function(e) {
+    placeMarker(e.latLng);
+  });
+}
+
+function getRandomLocation() {
+  const shuffled = [...gameLocations].sort(() => 0.5 - Math.random());
+  return shuffled[currentRound - 1] || shuffled[0];
+}
+
+function placeMarker(location) {
+  if (guessMarker) {
+    guessMarker.setPosition(location);
+  } else {
+    guessMarker = new google.maps.Marker({
+      position: location,
+      map: guessMap,
+      draggable: true
+    });
+  }
+}
+
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const from = new google.maps.LatLng(lat1, lng1);
+  const to = new google.maps.LatLng(lat2, lng2);
+  return google.maps.geometry.spherical.computeDistanceBetween(from, to);
+}
+
+function calculateScore(distance) {
+  // Формула подсчета очков (максимум 5000 за раунд)
+  const maxDistance = 20000000; // 20000 км
+  const score = Math.round(5000 * Math.exp(-distance / (maxDistance / 10)));
+  return Math.max(0, score);
+}
+
+function formatDistance(meters) {
+  if (meters < 1000) {
+    return Math.round(meters) + ' м';
+  } else {
+    return (meters / 1000).toFixed(2) + ' км';
+  }
+}
+
+document.getElementById('submit-guess').addEventListener('click', function() {
+  if (!guessMarker) {
+    alert('{{ _("Please place a marker on the map!") }}');
+    return;
+  }
+
+  const guessPos = guessMarker.getPosition();
+  const distance = calculateDistance(
+    currentLocation.lat, currentLocation.lng,
+    guessPos.lat(), guessPos.lng()
+  );
+  
+  const roundScore = calculateScore(distance);
+  totalScore += roundScore;
+
+  // Сохранение данных раунда
+  roundsData.push({
+    round: currentRound,
+    distance: distance,
+    score: roundScore
+  });
+
+  // Отображение результатов
+  document.getElementById('distance-display').textContent = formatDistance(distance);
+  document.getElementById('round-score').textContent = roundScore;
+  document.getElementById('total-score').textContent = totalScore;
+
+  // Показать линию между угаданной и реальной точкой
+  const line = new google.maps.Polyline({
+    path: [currentLocation, guessPos],
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+    map: guessMap
+  });
+
+  // Добавить маркер реальной локации
+  new google.maps.Marker({
+    position: currentLocation,
+    map: guessMap,
+    icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+  });
+
+  // Центрировать карту на обеих точках
+  const bounds = new google.maps.LatLngBounds();
+  bounds.extend(currentLocation);
+  bounds.extend(guessPos);
+  guessMap.fitBounds(bounds);
+
+  // Переключение кнопок
+  this.classList.add('d-none');
+  if (currentRound < 5) {
+    document.getElementById('next-round').classList.remove('d-none');
+  } else {
+    document.getElementById('finish-game').classList.remove('d-none');
+  }
+});
+
+document.getElementById('next-round').addEventListener('click', function() {
+  currentRound++;
+  document.getElementById('current-round').textContent = currentRound;
+  
+  // Обновление прогресс-бара
+  const progress = (currentRound / 5) * 100;
+  const progressBar = document.getElementById('progress-bar');
+  progressBar.style.width = progress + '%';
+  progressBar.textContent = progress + '%';
+  progressBar.setAttribute('aria-valuenow', progress);
+
+  // Сброс карты
+  guessMap = new google.maps.Map(document.getElementById('guess-map'), {
+    center: { lat: 20, lng: 0 },
+    zoom: 2,
+    streetViewControl: false
+  });
+  
+  guessMap.addListener('click', function(e) {
+    placeMarker(e.latLng);
+  });
+  
+  guessMarker = null;
+
+  // Новая локация
+  currentLocation = getRandomLocation();
+  streetViewPanorama.setPosition(currentLocation);
+
+  // Сброс информации
+  document.getElementById('distance-display').textContent = '-';
+  document.getElementById('round-score').textContent = '-';
+
+  // Переключение кнопок
+  this.classList.add('d-none');
+  document.getElementById('submit-guess').classList.remove('d-none');
+});
+
+document.getElementById('finish-game').addEventListener('click', function() {
+  // Заполнение таблицы результатов
+  const tbody = document.getElementById('rounds-table-body');
+  tbody.innerHTML = '';
+  
+  roundsData.forEach(round => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = round.round;
+    row.insertCell(1).textContent = formatDistance(round.distance);
+    row.insertCell(2).textContent = round.score;
+  });
+
+  document.getElementById('final-score').textContent = totalScore;
+
+  // Показать модальное окно
+  const modal = new bootstrap.Modal(document.getElementById('results-modal'));
+  modal.show();
+});
+
+// Инициализация при загрузке страницы
+window.addEventListener('load', initGame);
+</script>
+{% endblock %}

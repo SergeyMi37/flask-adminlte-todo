@@ -210,6 +210,29 @@
                   </li>
                 </ul>
               </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-globe"></i>
+                  <p>
+                    {{ _('GeoGuessr Free') }}
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{ url_for('geoguessr_game') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('Play Game') }}</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('geoguessr_leaderboard') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>{{ _('Leaderboard') }}</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
               {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
               <li class="nav-item">
                 <a href="#" class="nav-link">
@@ -390,10 +413,63 @@
     <!--end::OverlayScrollbars Configure-->
     {% block extra_js %}{% endblock %}
     
-    <!--begin::Language Switching Script-->
+    <!--begin::LocalStorage Settings Script-->
     <script>
+      // Функция для сохранения настроек в localStorage
+      function saveToLocalStorage(key, value) {
+        try {
+          localStorage.setItem('todoapp_' + key, value);
+        } catch (e) {
+          console.error('Error saving to localStorage:', e);
+        }
+      }
+      
+      // Функция для загрузки настроек из localStorage
+      function loadFromLocalStorage(key, defaultValue) {
+        try {
+          const value = localStorage.getItem('todoapp_' + key);
+          return value !== null ? value : defaultValue;
+        } catch (e) {
+          console.error('Error loading from localStorage:', e);
+          return defaultValue;
+        }
+      }
+      
+      // Инициализация настроек при загрузке страницы
+      document.addEventListener('DOMContentLoaded', function() {
+        // Загружаем настройки из localStorage
+        const savedLanguage = loadFromLocalStorage('language', '{{ session.get("language", "ru") }}');
+        const savedTheme = loadFromLocalStorage('theme', '{{ session.get("theme", "dark") }}');
+        const savedPerPage = loadFromLocalStorage('per_page', '{{ session.get("per_page", 10) }}');
+        
+        // Применяем настройки
+        document.documentElement.lang = savedLanguage;
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        
+        // Синхронизируем с сервером при первой загрузке
+        const currentLanguage = "{{ session.get('language', 'ru') }}";
+        const currentTheme = "{{ session.get('theme', 'dark') }}";
+        const currentPerPage = "{{ session.get('per_page', 10) }}";
+        
+        // Если настройки в localStorage отличаются от серверных, обновляем сервер
+        if (savedLanguage !== currentLanguage) {
+          fetch("{{ url_for('set_language', lang='') }}" + savedLanguage, {
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+          });
+        }
+        if (savedTheme !== currentTheme) {
+          fetch("{{ url_for('set_theme', theme='') }}" + savedTheme);
+        }
+        if (savedPerPage !== currentPerPage) {
+          fetch("{{ url_for('set_pagination', per_page=0) }}".replace('/0', '/' + savedPerPage));
+        }
+      });
+      
       // Функция для смены языка
       function changeLanguage(url) {
+        const lang = url.split('/').pop();
+        saveToLocalStorage('language', lang);
+        
         fetch(url, {
           headers: {
             'X-Requested-With': 'XMLHttpRequest'
@@ -401,7 +477,9 @@
         })
         .then(response => {
           if (response.ok) {
-            // Прямо перенаправляем на ту же страницу для обновления перевода
+            // Обновляем атрибут языка
+            document.documentElement.lang = lang;
+            // Перезагружаем страницу для обновления перевода
             window.location.href = window.location.pathname + window.location.search;
           } else {
             console.error('Language change failed');
@@ -409,17 +487,34 @@
         })
         .catch(error => {
           console.error('Error during language change:', error);
-          // В случае ошибки все равно перезагружаем страницу
           window.location.reload();
         });
       }
       
-      // Обновляем атрибут языка у HTML элемента
+      // Перехватываем клики по ссылкам темы
       document.addEventListener('DOMContentLoaded', function() {
-        document.documentElement.lang = "{{ session.get('language', 'ru') }}";
+        document.querySelectorAll('a[href*="/theme/"]').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const theme = this.href.split('/').pop();
+            saveToLocalStorage('theme', theme);
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            fetch(this.href).then(() => window.location.reload());
+          });
+        });
+        
+        // Перехватываем клики по ссылкам пагинации
+        document.querySelectorAll('a[href*="/pagination/"]').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const perPage = this.href.split('/').pop();
+            saveToLocalStorage('per_page', perPage);
+            fetch(this.href).then(() => window.location.reload());
+          });
+        });
       });
     </script>
-    <!--end::Language Switching Script-->
+    <!--end::LocalStorage Settings Script-->
     <!--end::Script-->
   </body>
   <!--end::Body-->
