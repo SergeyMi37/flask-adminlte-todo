@@ -23,9 +23,6 @@ services:
       start_period: 40s
     networks:
       - todo-network
-
-  Optional: PostgreSQL database service
-  Uncomment and configure if using PostgreSQL
   postgres:
     image: postgres:15-alpine
     environment:

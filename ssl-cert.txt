@@ -1,0 +1,150 @@
+Следующая инструкция подробно описывает подключение SSL-сертификата на веб-сервер Apache для безопасной передачи данных по протоколу HTTPS на платформе CentOS 7.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Что вам понадобится:
+
+- Установленный Apache 2.4 (стандартная установка доступна через репозитории CentOS).
+- SSL-сертификат (полученный от центра сертификации, например Let’s Encrypt, или коммерческий).
+- Приватный ключ, связанный с сертификатом.
+- Доступ к консоли сервера с правами суперпользователя (root).
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Шаг 1. Убедимся, что у нас установлен модуль SSL
+
+1. Проверьте наличие и состояние модуля SSL в Apache:
+
+Bash
+
+
+sudo apachectl -M | grep ssl
+
+Если модуль отсутствует, установите его:
+
+Bash
+
+
+sudo yum install mod_ssl
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Шаг 2. Копируем сертификаты и приватный ключ на сервер
+
+Размещаем полученные файлы сертификатов и приватного ключа в стандартную директорию Apache:
+
+Bash
+
+
+sudo mkdir -p /etc/httpd/ssl
+sudo chown root:root /etc/httpd/ssl
+sudo chmod 700 /etc/httpd/ssl
+
+Затем переносим туда наши файлы:
+
+Bash
+
+
+sudo cp path_to_your_certificate.crt /etc/httpd/ssl/
+sudo cp path_to_your_private_key.key /etc/httpd/ssl/
+
+Если у вас есть промежуточный сертификат, сделайте то же самое:
+
+Bash
+
+
+sudo cp path_to_intermediate_certificate.crt /etc/httpd/ssl/
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Шаг 3. Изменяем конфигурационный файл Apache
+
+Конфигурация Apache хранится в файлах /etc/httpd/conf/httpd.conf и /etc/httpd/conf.d/*.conf. Нужно добавить новые правила для HTTPS.
+
+Откроем конфигурационный файл Apache для редактирования:
+
+Bash
+
+
+sudo vi /etc/httpd/conf.d/vhost.conf
+
+Здесь нам важно прописать виртуальный хост для порта 443 (HTTPS). Например:
+
+копировать
+
+
+<VirtualHost *:443>
+    ServerAdmin admin@example.com
+    ServerName example.com
+    ServerAlias www.example.com
+    DocumentRoot /var/www/html
+
+    SSLEngine on
+    SSLProtocol TLSv1.2 TLSv1.3
+
+    SSLCertificateFile /etc/httpd/ssl/your_certificate.crt
+    SSLCertificateKeyFile /etc/httpd/ssl/your_private_key.key
+
+    # Если имеется промежуточный сертификат, добавляем:
+    SSLCertificateChainFile /etc/httpd/ssl/intermediate_certificate.crt
+
+    # Безопасность соединений
+    SSLHonorCipherOrder on
+    SSLCompression off
+    SSLSessionCacheTimeout 300
+
+    # Журналы
+    ErrorLog logs/ssl-error_log
+    TransferLog logs/ssl-access_log
+</VirtualHost>
+
+Описание основных полей:
+
+- SSLEngine on: включаем SSL.
+- SSLCertificateFile: путь к основному сертификату.
+- SSLCertificateKeyFile: путь к приватному ключу.
+- SSLCertificateChainFile: путь к промежуточному сертификату (при наличии).
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Шаг 4. Проверка конфигурации
+
+Выполняем проверку корректности нашей конфигурации:
+
+Bash
+
+
+sudo apachectl configtest
+
+Если система сообщит Syntax OK, значит всё верно настроено.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Шаг 5. Перезапуск Apache
+
+Применяем внесённые изменения, перезапуская Apache:
+
+Bash
+
+
+sudo systemctl restart httpd
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Шаг 6. Проверка доступности HTTPS
+
+Попробуйте перейти на ваш сайт через адрес https://example.com. Браузер должен подтвердить использование HTTPS и показать значок замка рядом с адресом.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Дополнительно: автоматический редирект с HTTP на HTTPS
+
+Желательно направить пользователей сразу на защищённый ресурс. Добавьте следующий блок в ваш конфигурационный файл Apache:
+
+копировать
+
+
+<VirtualHost *:80>
+    ServerName example.com
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/(.*)$ https://%{SERVER_NAME}/$1 [R=301,L]
+</VirtualHost>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+▌ Итог
+
+Теперь ваш веб-сайт доступен по HTTPS благодаря правильно установленным сертификатам и конфигурации Apache. Регулярно проверяйте сроки годности сертификатов и своевременно обновляйте их.[1][2][[3](https://www.ispmanag
+...
