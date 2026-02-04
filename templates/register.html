@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Регистрация{% endblock %}
+{% block title %}{{ _('Registration') }}{% endblock %}
 
 {% block content %}
 <div class="register-box">
@@ -10,11 +10,11 @@
 
   <div class="card">
     <div class="card-body register-card-body">
-      <p class="login-box-msg">Зарегистрировать новый аккаунт</p>
+      <p class="login-box-msg">{{ _('Register a new account') }}</p>
 
       <form action="{{ url_for('register') }}" method="post">
         <div class="input-group mb-3">
-          <input type="text" name="username" class="form-control" placeholder="Имя пользователя" required>
+          <input type="text" name="username" class="form-control" placeholder="{{ _('Username') }}" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="email" name="email" class="form-control" placeholder="Email" required>
+          <input type="email" name="email" class="form-control" placeholder="{{ _('Email') }}" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" name="password" class="form-control" placeholder="Пароль" required>
+          <input type="password" name="password" class="form-control" placeholder="{{ _('Password') }}" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -39,8 +39,8 @@
         </div>
         <div class="input-group mb-3">
           <select name="role" class="form-control" required>
-            <option value="user">Пользователь</option>
-            <option value="admin">Администратор</option>
+            <option value="user">{{ _('User') }}</option>
+            <option value="admin">{{ _('Administrator') }}</option>
           </select>
           <div class="input-group-append">
             <div class="input-group-text">
@@ -53,19 +53,19 @@
             <div class="icheck-primary">
               <input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
               <label for="agreeTerms">
-               Я согласен с <a href="#">условиями</a>
+               {{ _('I agree to the') }} <a href="#">{{ _('terms') }}</a>
               </label>
             </div>
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+            <button type="submit" class="btn btn-primary btn-block">{{ _('Register') }}</button>
           </div>
           <!-- /.col -->
         </div>
       </form>
 
-      <a href="{{ url_for('login') }}" class="text-center">У меня уже есть аккаунт</a>
+      <a href="{{ url_for('login') }}" class="text-center">{{ _("I already have an account") }}</a>
     </div>
     <!-- /.form-box -->
   </div><!-- /.card -->

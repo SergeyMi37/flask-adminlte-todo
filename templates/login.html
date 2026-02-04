@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Вход{% endblock %}
+{% block title %}{{ _('Login') }}{% endblock %}
 
 {% block content %}
 <div class="login-box">
@@ -10,11 +10,11 @@
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Войдите, чтобы начать сессию</p>
+      <p class="login-box-msg">{{ _('Sign in to start your session') }}</p>
 
       <form action="{{ url_for('login') }}" method="post">
         <div class="input-group mb-3">
-          <input type="text" name="username" class="form-control" placeholder="Имя пользователя" required>
+          <input type="text" name="username" class="form-control" placeholder="{{ _('Username') }}" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" name="password" class="form-control" placeholder="Пароль" required>
+          <input type="password" name="password" class="form-control" placeholder="{{ _('Password') }}" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -34,23 +34,23 @@
             <div class="icheck-primary">
               <input type="checkbox" id="remember">
               <label for="remember">
-                Запомнить меня
+                {{ _('Remember Me') }}
               </label>
             </div>
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+            <button type="submit" class="btn btn-primary btn-block">{{ _('Sign In') }}</button>
           </div>
           <!-- /.col -->
         </div>
       </form>
 
       <p class="mb-1">
-        <a href="#">Забыли пароль?</a>
+        <a href="#">{{ _('Forgot Password?') }}</a>
       </p>
       <p class="mb-0">
-        <a href="{{ url_for('register') }}" class="text-center">Зарегистрировать новый аккаунт</a>
+        <a href="{{ url_for('register') }}" class="text-center">{{ _('Register a new account') }}</a>
       </p>
     </div>
     <!-- /.login-card-body -->

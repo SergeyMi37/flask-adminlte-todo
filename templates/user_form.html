@@ -1,32 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}{% if user %}Редактирование пользователя{% else %}Новый пользователь{% endif %}{% endblock %}
-{% block page_title %}{% if user %}Редактирование пользователя{% else %}Новый пользователь{% endif %}{% endblock %}
-{% block breadcrumb %}{% if user %}Редактирование пользователя{% else %}Новый пользователь{% endif %}{% endblock %}
+{% block title %}{% if user %}{{ _('Editing User') }}{% else %}{{ _('New User') }}{% endif %}{% endblock %}
+{% block page_title %}{% if user %}{{ _('Editing User') }}{% else %}{{ _('New User') }}{% endif %}{% endblock %}
+{% block breadcrumb %}{% if user %}{{ _('Editing User') }}{% else %}{{ _('New User') }}{% endif %}{% endblock %}
 
 {% block content %}
 <div class="row">
   <div class="col-md-6">
     <div class="card card-primary">
       <div class="card-header">
-        <h3 class="card-title">{% if user %}Редактировать пользователя{% else %}Создать пользователя{% endif %}</h3>
+        <h3 class="card-title">{% if user %}{{ _('Edit User') }}{% else %}{{ _('Create User') }}{% endif %}</h3>
       </div>
       <form method="post">
         <div class="card-body">
           <div class="form-group">
-            <label for="username">Имя пользователя</label>
+            <label for="username">{{ _('Username') }}</label>
             <input type="text" class="form-control" id="username" name="username" value="{{ user.username if user else '' }}" required>
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">{{ _('Email') }}</label>
             <input type="email" class="form-control" id="email" name="email" value="{{ user.email if user else '' }}" required>
           </div>
           <div class="form-group">
-            <label for="password">{% if user %}Новый пароль (оставьте пустым, чтобы не менять){% else %}Пароль{% endif %}</label>
+            <label for="password">{% if user %}{{ _('New password (leave empty to not change)') }}{% else %}{{ _('Password') }}{% endif %}</label>
             <input type="password" class="form-control" id="password" name="password" {% if not user %}required{% endif %}>
           </div>
           <div class="form-group">
-            <label for="role_id">Роль</label>
+            <label for="role_id">{{ _('Role') }}</label>
             <select class="form-control" id="role_id" name="role_id" required>
               {% for role in roles %}
               <option value="{{ role.id }}" {% if user and user.role_id == role.id %}selected{% endif %}>{{ role.name }}</option>
@@ -35,8 +35,8 @@
           </div>
         </div>
         <div class="card-footer">
-          <button type="submit" class="btn btn-primary">{% if user %}Сохранить{% else %}Создать{% endif %}</button>
-          <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">Отмена</a>
+          <button type="submit" class="btn btn-primary">{% if user %}{{ _('Save') }}{% else %}{{ _('Create') }}{% endif %}</button>
+          <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">{{ _('Cancel') }}</a>
         </div>
       </form>
     </div>

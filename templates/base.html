@@ -108,8 +108,8 @@
               </a>
               <ul class="dropdown-menu">
                 <li><h6 class="dropdown-header">{{ _('Language') }}</h6></li>
-                <li><a href="{{ url_for('set_language', lang='ru') }}" class="dropdown-item{% if session.get('language', 'ru') == 'ru' %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if session.get('language', 'ru') != 'ru' %} d-none{% endif %}"></i>Русский</a></li>
-                <li><a href="{{ url_for('set_language', lang='en') }}" class="dropdown-item{% if session.get('language', 'ru') == 'en' %} active{% endif %}"><i class="bi bi-check-circle-fill me-2{% if session.get('language', 'ru') != 'en' %} d-none{% endif %}"></i>English</a></li>
+                <li><a href="{{ url_for('set_language', lang='ru') }}" class="dropdown-item{% if session.get('language', 'ru') == 'ru' %} active{% endif %}" onclick="event.preventDefault(); changeLanguage(this.href);"><i class="bi bi-check-circle-fill me-2{% if session.get('language', 'ru') != 'ru' %} d-none{% endif %}"></i>{{ _('Russian') }}</a></li>
+                <li><a href="{{ url_for('set_language', lang='en') }}" class="dropdown-item{% if session.get('language', 'ru') == 'en' %} active{% endif %}" onclick="event.preventDefault(); changeLanguage(this.href);"><i class="bi bi-check-circle-fill me-2{% if session.get('language', 'ru') != 'en' %} d-none{% endif %}"></i>{{ _('English') }}</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><h6 class="dropdown-header">{{ _('Theme') }}</h6></li>
                 <li><a href="{{ url_for('set_theme', theme='dark') }}" class="dropdown-item{% if session.get('theme', 'dark') == 'dark' %} active{% endif %}"><i class="bi bi-moon-fill me-2{% if session.get('theme', 'dark') != 'dark' %} d-none{% endif %}"></i>{{ _('Dark') }}</a></li>
@@ -263,7 +263,7 @@
             <!--begin::Row-->
             <div class="row">
               <div class="col-sm-6">
-                <h3 class="mb-0">{% block page_title %}Dashboard{% endblock %}</h3>
+                <h3 class="mb-0">{% block page_title %}{{ _('Dashboard') }}{% endblock %}</h3>
               </div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
@@ -389,6 +389,37 @@
     </script>
     <!--end::OverlayScrollbars Configure-->
     {% block extra_js %}{% endblock %}
+    
+    <!--begin::Language Switching Script-->
+    <script>
+      // Функция для смены языка
+      function changeLanguage(url) {
+        fetch(url, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            // Прямо перенаправляем на ту же страницу для обновления перевода
+            window.location.href = window.location.pathname + window.location.search;
+          } else {
+            console.error('Language change failed');
+          }
+        })
+        .catch(error => {
+          console.error('Error during language change:', error);
+          // В случае ошибки все равно перезагружаем страницу
+          window.location.reload();
+        });
+      }
+      
+      // Обновляем атрибут языка у HTML элемента
+      document.addEventListener('DOMContentLoaded', function() {
+        document.documentElement.lang = "{{ session.get('language', 'ru') }}";
+      });
+    </script>
+    <!--end::Language Switching Script-->
     <!--end::Script-->
   </body>
   <!--end::Body-->

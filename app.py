@@ -9,6 +9,7 @@ import os
 from flask_cors import CORS
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+import logging
 
 load_dotenv()
 
@@ -29,9 +30,41 @@ login_manager.login_view = 'login'
 # Flask-Babel setup
 babel = Babel(app)
 
+# Настройка логирования
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 # Настройки Babel
 app.config['BABEL_DEFAULT_LOCALE'] = 'ru'  # Русский по умолчанию
 app.config['BABEL_SUPPORTED_LOCALES'] = ['ru', 'en']  # Поддерживаемые языки
+
+# Инициализация Babel с динамическим выбором локали
+def get_locale():
+    """Определяет текущий язык пользователя"""
+    try:
+        from flask import g
+        # Сначала проверяем объект g, установленный в load_user_settings
+        if hasattr(g, 'babel_locale') and g.babel_locale:
+            logger.debug(f"get_locale from g: {g.babel_locale}")
+            return g.babel_locale
+        # Затем проверяем сессию
+        lang = session.get('language')
+        logger.debug(f"get_locale from session: {lang}")
+        if not lang:
+            # Если в сессии нет, загружаем из Options
+            lang = get_option('language', category='user_settings')
+            logger.debug(f"get_locale from options: {lang}")
+        if not lang:
+            # Если в Options нет, используем принятые языки браузера
+            lang = request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES'])
+            logger.debug(f"get_locale from browser: {lang}")
+        logger.debug(f"get_locale returning: {lang}")
+        return lang
+    except Exception as e:
+        logger.error(f"Error in get_locale: {e}")
+        return app.config['BABEL_DEFAULT_LOCALE']
+
+babel.init_app(app, locale_selector=get_locale)
 
 @app.before_request
 def load_user_settings():
@@ -42,23 +75,13 @@ def load_user_settings():
         session['theme'] = get_option('theme', category='user_settings')
     if 'per_page' not in session:
         session['per_page'] = get_option('per_page', category='user_settings')
+    
+    # Обновляем локаль для Babel, если язык в сессии изменился
+    from flask import g
+    g.babel_locale = session.get('language', get_option('language', category='user_settings'))
 
-def get_locale():
-    """Определяет текущий язык пользователя"""
-    try:
-        # Сначала проверяем сессию
-        lang = session.get('language')
-        if not lang:
-            # Если в сессии нет, загружаем из Options
-            lang = get_option('language', category='user_settings')
-        if not lang:
-            # Если в Options нет, используем принятые языки браузера
-            lang = request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES'])
-        return lang
-    except:
-        return app.config['BABEL_DEFAULT_LOCALE']
-
-babel.init_app(app, locale_selector=get_locale)
+# Удаляем дублирующиеся определения функций и инициализаций
+# Все необходимые функции и инициализации уже определены ранее
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -71,14 +94,31 @@ def is_admin():
 # Helper functions for Options
 def get_option(name, default=None, user_id=None, category=None):
     option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
-    return option.value if option else default
+    result = option.value if option else default
+    logger.debug(f"Getting option: {name} = {result} (category: {category})")
+    return result
+
+@app.template_global()
+def get_option(name, default=None, user_id=None, category=None):
+    option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
+    result = option.value if option else default
+    logger.debug(f"Getting option: {name} = {result} (category: {category})")
+    return result
+
+@app.template_global()
+def get_g_value(attr_name, default=None):
+    from flask import g
+    return getattr(g, attr_name, default)
 
 def set_option(name, value, description='', user_id=None, category=None):
+    logger.debug(f"Setting option: {name} = {value} (category: {category})")
     option = Options.query.filter_by(name=name, user_id=user_id, category=category).first()
     if option:
+        logger.debug(f"Updating existing option: {option.value} -> {value}")
         option.value = value
         option.description = description
     else:
+        logger.debug(f"Creating new option: {name} = {value}")
         option = Options(name=name, value=value, description=description, user_id=user_id, category=category)
         db.session.add(option)
     db.session.commit()
@@ -504,7 +544,23 @@ class TodoItem(Resource):
 def set_language(lang):
     if lang in app.config['BABEL_SUPPORTED_LOCALES']:
         session['language'] = lang
-        set_option('language', lang, 'Выбранный язык интерфейса', category='user_settings')
+        set_option('language', lang, _('Selected interface language'), category='user_settings')
+    else:
+        logger.warning(f"Invalid language requested: {lang}")
+    
+    # Очистка кэша локали для обеспечения обновления
+    from flask import g
+    if hasattr(g, 'babel_locale'):
+        delattr(g, 'babel_locale')
+    
+    # Принудительно обновляем контекст перевода
+    from flask_babel import refresh
+    refresh()
+    
+    # Возвращаем JSON ответ для AJAX запроса
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return {'status': 'success', 'language': lang}
+    
     return redirect(request.referrer or url_for('index'))
 
 @app.route('/theme/<theme>')
@@ -525,7 +581,7 @@ def set_pagination(per_page):
 @login_required
 def view_options():
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     # Получаем все опции пользователя
     user_options = Options.query.filter_by(user_id=None, category='user_settings').all()
@@ -535,7 +591,7 @@ def view_options():
 @login_required
 def manage_users():
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     users = User.query.all()
     return render_template('manage_users.html', users=users)
@@ -544,7 +600,7 @@ def manage_users():
 @login_required
 def new_user():
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     if request.method == 'POST':
         username = request.form.get('username')
@@ -553,10 +609,10 @@ def new_user():
         role_id = request.form.get('role_id')
 
         if User.query.filter_by(username=username).first():
-            flash('Пользователь с таким именем уже существует')
+            flash(_('User with this username already exists'))
             return redirect(url_for('new_user'))
         if User.query.filter_by(email=email).first():
-            flash('Пользователь с таким email уже существует')
+            flash(_('User with this email already exists'))
             return redirect(url_for('new_user'))
 
         role = Role.query.get_or_404(role_id)
@@ -564,7 +620,7 @@ def new_user():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        flash('Пользователь создан успешно!')
+        flash(_('User created successfully!'))
         return redirect(url_for('manage_users'))
     roles = Role.query.all()
     return render_template('user_form.html', roles=roles)
@@ -573,7 +629,7 @@ def new_user():
 @login_required
 def edit_user(id):
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     user = User.query.get_or_404(id)
     if request.method == 'POST':
@@ -583,17 +639,17 @@ def edit_user(id):
         password = request.form.get('password')
 
         if User.query.filter_by(username=user.username).first() and User.query.filter_by(username=user.username).first().id != id:
-            flash('Пользователь с таким именем уже существует')
+            flash(_('User with this username already exists'))
             return redirect(url_for('edit_user', id=id))
         if User.query.filter_by(email=user.email).first() and User.query.filter_by(email=user.email).first().id != id:
-            flash('Пользователь с таким email уже существует')
+            flash(_('User with this email already exists'))
             return redirect(url_for('edit_user', id=id))
 
         user.role = Role.query.get_or_404(role_id)
         if password:
             user.set_password(password)
         db.session.commit()
-        flash('Пользователь обновлен успешно!')
+        flash(_('User updated successfully!'))
         return redirect(url_for('manage_users'))
     roles = Role.query.all()
     return render_template('user_form.html', user=user, roles=roles)
@@ -602,22 +658,22 @@ def edit_user(id):
 @login_required
 def delete_user(id):
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     user = User.query.get_or_404(id)
     if user.id == current_user.id:
-        flash('Нельзя удалить самого себя!')
+        flash(_("Can't delete yourself!"))
         return redirect(url_for('manage_users'))
     db.session.delete(user)
     db.session.commit()
-    flash('Пользователь удален успешно!')
+    flash(_('User deleted successfully!'))
     return redirect(url_for('manage_users'))
 
 @app.route('/admin/roles')
 @login_required
 def manage_roles():
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     roles = Role.query.all()
     return render_template('manage_roles.html', roles=roles)
@@ -626,20 +682,20 @@ def manage_roles():
 @login_required
 def new_role():
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
 
         if Role.query.filter_by(name=name).first():
-            flash('Роль с таким именем уже существует')
+            flash(_('Role with this name already exists'))
             return redirect(url_for('new_role'))
 
         role = Role(name=name, description=description)
         db.session.add(role)
         db.session.commit()
-        flash('Роль создана успешно!')
+        flash(_('Role created successfully!'))
         return redirect(url_for('manage_roles'))
     return render_template('role_form.html')
 
@@ -647,7 +703,7 @@ def new_role():
 @login_required
 def edit_role(id):
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     role = Role.query.get_or_404(id)
     if request.method == 'POST':
@@ -655,13 +711,13 @@ def edit_role(id):
         description = request.form.get('description')
 
         if Role.query.filter_by(name=name).first() and Role.query.filter_by(name=name).first().id != id:
-            flash('Роль с таким именем уже существует')
+            flash(_('Role with this name already exists'))
             return redirect(url_for('edit_role', id=id))
 
         role.name = name
         role.description = description
         db.session.commit()
-        flash('Роль обновлена успешно!')
+        flash(_('Role updated successfully!'))
         return redirect(url_for('manage_roles'))
     return render_template('role_form.html', role=role)
 
@@ -669,18 +725,18 @@ def edit_role(id):
 @login_required
 def delete_role(id):
     if not is_admin():
-        flash('Доступ запрещен. Требуются права администратора.')
+        flash(_('Access denied. Administrator rights required.'))
         return redirect(url_for('index'))
     role = Role.query.get_or_404(id)
     if role.name == 'admin':
-        flash('Нельзя удалить роль администратора!')
+        flash(_("Can't delete admin role!"))
         return redirect(url_for('manage_roles'))
     if User.query.filter_by(role_id=id).first():
-        flash('Нельзя удалить роль, которая используется пользователями!')
+        flash(_("Can't delete role that is assigned to users!"))
         return redirect(url_for('manage_roles'))
     db.session.delete(role)
     db.session.commit()
-    flash('Роль удалена успешно!')
+    flash(_('Role deleted successfully!'))
     return redirect(url_for('manage_roles'))
 
 # Web Routes
@@ -701,7 +757,7 @@ def login():
             login_user(user)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('index'))
-        flash('Неверное имя пользователя или пароль')
+        flash(_('Invalid username or password'))
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -716,17 +772,17 @@ def register():
 
         # Проверяем, существует ли пользователь
         if User.query.filter_by(username=username).first():
-            flash('Пользователь с таким именем уже существует')
+            flash(_('User with this username already exists'))
             return redirect(url_for('register'))
         if User.query.filter_by(email=email).first():
-            flash('Пользователь с таким email уже существует')
+            flash(_('User with this email already exists'))
             return redirect(url_for('register'))
 
         # Получаем роль
         role = Role.query.filter_by(name=role_name).first()
         if not role:
             # Создаем роль, если не существует
-            role = Role(name=role_name, description=f'Роль {role_name}')
+            role = Role(name=role_name, description=_('Role {role_name}').format(role_name=role_name))
             db.session.add(role)
             db.session.commit()
 
@@ -736,7 +792,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash('Регистрация успешна! Теперь вы можете войти.')
+        flash(_('Registration successful! You can now log in.'))
         return redirect(url_for('login'))
     return render_template('register.html')
 
@@ -788,7 +844,7 @@ def new_todo():
         new_todo = Todo(title=title, description=description, due_date=due_date, completed=completed)
         db.session.add(new_todo)
         db.session.commit()
-        flash('Todo created successfully!')
+        flash(_('Todo created successfully!'))
         return redirect(url_for('index'))
     return render_template('todo_form.html')
 
@@ -813,7 +869,7 @@ def edit_todo(id):
         todo.completed = new_completed
         todo.due_date = new_due_date
         db.session.commit()
-        flash('Todo updated successfully!')
+        flash(_('Todo updated successfully!'))
         return redirect(url_for('index'))
     return render_template('todo_form.html', todo=todo)
 
@@ -823,7 +879,7 @@ def delete_todo(id):
     todo = Todo.query.get_or_404(id)
     db.session.delete(todo)
     db.session.commit()
-    flash('Todo deleted successfully!')
+    flash(_('Todo deleted successfully!'))
     return redirect(url_for('index'))
 
 @app.route('/todo/<int:id>/toggle')

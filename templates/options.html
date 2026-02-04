@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}User Options - Todo App{% endblock %}
+{% block title %}{{ _('User Options') }} - Todo App{% endblock %}
 
-{% block page_title %}User Options{% endblock %}
+{% block page_title %}{{ _('User Options') }}{% endblock %}
 
-{% block breadcrumb %}Options{% endblock %}
+{% block breadcrumb %}{{ _('Options') }}{% endblock %}
 
 {% block content %}
 <div class="row">
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Current User Settings</h3>
+        <h3 class="card-title">{{ _('Current User Settings') }}</h3>
         <div class="card-tools">
           <button type="button" class="btn btn-tool" data-card-widget="collapse">
             <i class="fas fa-minus"></i>
@@ -24,11 +24,11 @@
             <thead class="table-dark">
               <tr>
                 <th class="text-center">#</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Value</th>
-                <th class="text-center">Actions</th>
+                <th>{{ _('Name') }}</th>
+                <th>{{ _('Description') }}</th>
+                <th>{{ _('Category') }}</th>
+                <th>{{ _('Value') }}</th>
+                <th class="text-center">{{ _('Actions') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -39,34 +39,34 @@
                   <td>
                     <strong>{{ option.name }}</strong>
                   </td>
-                  <td>{{ option.description or 'No description' }}</td>
+                  <td>{{ option.description or _('No description') }}</td>
                   <td>
                     <span class="badge badge-secondary">{{ option.category }}</span>
                   </td>
                   <td>
                     {% if option.name == 'language' %}
                       {% if option.value == 'ru' %}
-                        <span class="badge badge-primary">Русский</span>
+                        <span class="badge badge-primary">{{ _('Russian') }}</span>
                       {% elif option.value == 'en' %}
-                        <span class="badge badge-success">English</span>
+                        <span class="badge badge-success">{{ _('English') }}</span>
                       {% else %}
                         <span class="badge badge-secondary">{{ option.value }}</span>
                       {% endif %}
                     {% elif option.name == 'theme' %}
                       {% if option.value == 'dark' %}
                         <span class="badge badge-dark">
-                          <i class="bi bi-moon-fill me-1"></i>Dark
+                          <i class="bi bi-moon-fill me-1"></i>{{ _('Dark') }}
                         </span>
                       {% elif option.value == 'light' %}
                         <span class="badge badge-light text-dark">
-                          <i class="bi bi-sun-fill me-1"></i>Light
+                          <i class="bi bi-sun-fill me-1"></i>{{ _('Light') }}
                         </span>
                       {% else %}
                         <span class="badge badge-secondary">{{ option.value }}</span>
                       {% endif %}
                     {% elif option.name == 'per_page' %}
                       <span class="badge badge-info">
-                        <i class="bi bi-list-ul me-1"></i>{{ option.value }} per page
+                        <i class="bi bi-list-ul me-1"></i>{{ option.value }} {{ _('per page') }}
                       </span>
                     {% else %}
                       <code>{{ option.value }}</code>
@@ -75,26 +75,26 @@
                   <td class="text-center">
                     {% if option.name == 'language' %}
                       <div class="btn-group btn-group-sm">
-                        <a href="{{ url_for('set_language', lang='ru') }}" class="btn btn-outline-primary{% if session.get('language', 'ru') == 'ru' %} active{% endif %}" title="Switch to Russian">
+                        <a href="{{ url_for('set_language', lang='ru') }}" class="btn btn-outline-primary{% if session.get('language', 'ru') == 'ru' %} active{% endif %}" title="{{ _('Switch to Russian') }}">
                           <i class="bi bi-check-circle-fill{% if session.get('language', 'ru') != 'ru' %} d-none{% endif %}"></i> RU
                         </a>
-                        <a href="{{ url_for('set_language', lang='en') }}" class="btn btn-outline-success{% if session.get('language', 'ru') == 'en' %} active{% endif %}" title="Switch to English">
+                        <a href="{{ url_for('set_language', lang='en') }}" class="btn btn-outline-success{% if session.get('language', 'ru') == 'en' %} active{% endif %}" title="{{ _('Switch to English') }}">
                           <i class="bi bi-check-circle-fill{% if session.get('language', 'ru') != 'en' %} d-none{% endif %}"></i> EN
                         </a>
                       </div>
                     {% elif option.name == 'theme' %}
                       <div class="btn-group btn-group-sm">
-                        <a href="{{ url_for('set_theme', theme='dark') }}" class="btn btn-outline-dark{% if session.get('theme', 'dark') == 'dark' %} active{% endif %}" title="Switch to Dark theme">
+                        <a href="{{ url_for('set_theme', theme='dark') }}" class="btn btn-outline-dark{% if session.get('theme', 'dark') == 'dark' %} active{% endif %}" title="{{ _('Switch to Dark theme') }}">
                           <i class="bi bi-moon-fill"></i>
                         </a>
-                        <a href="{{ url_for('set_theme', theme='light') }}" class="btn btn-outline-light{% if session.get('theme', 'dark') == 'light' %} active{% endif %}" title="Switch to Light theme">
+                        <a href="{{ url_for('set_theme', theme='light') }}" class="btn btn-outline-light{% if session.get('theme', 'dark') == 'light' %} active{% endif %}" title="{{ _('Switch to Light theme') }}">
                           <i class="bi bi-sun-fill"></i>
                         </a>
                       </div>
                     {% elif option.name == 'per_page' %}
                       <div class="btn-group btn-group-sm">
                         {% for pages in [5, 10, 25, 50, 100] %}
-                          <a href="{{ url_for('set_pagination', per_page=pages) }}" class="btn btn-outline-info{% if session.get('per_page', 10)|string == pages|string %} active{% endif %}" title="{{ pages }} per page">
+                          <a href="{{ url_for('set_pagination', per_page=pages) }}" class="btn btn-outline-info{% if session.get('per_page', 10)|string == pages|string %} active{% endif %}" title="{{ pages }} {{ _('per page') }}">
                             {{ pages }}
                           </a>
                         {% endfor %}
@@ -107,7 +107,7 @@
                 <tr>
                   <td colspan="6" class="text-center text-muted py-4">
                     <i class="bi bi-info-circle me-2"></i>
-                    No user settings found. Start using the application to create settings.
+                    {{ _('No user settings found. Start using the application to create settings.') }}
                   </td>
                 </tr>
               {% endif %}
@@ -120,7 +120,7 @@
           <div class="col-12">
             <small class="text-muted">
               <i class="bi bi-info-circle me-1"></i>
-              Settings are automatically saved and will be restored when you restart the application or open it in a new browser window.
+              {{ _('Settings are automatically saved and will be restored when you restart the application or open it in a new browser window.') }}
             </small>
           </div>
         </div>
@@ -131,22 +131,22 @@
       <div class="card-header">
         <h5 class="card-title mb-0">
           <i class="bi bi-lightbulb text-warning me-2"></i>
-          How Settings Work
+          {{ _('How Settings Work') }}
         </h5>
       </div>
       <div class="card-body">
         <div class="row">
           <div class="col-md-4">
-            <h6><i class="bi bi-translate text-primary me-2"></i>Language</h6>
-            <p class="small text-muted">Choose your preferred interface language. Currently supports Russian and English.</p>
+            <h6><i class="bi bi-translate text-primary me-2"></i>{{ _('Language') }}</h6>
+            <p class="small text-muted">{{ _('Choose your preferred interface language. Currently supports Russian and English.') }}</p>
           </div>
           <div class="col-md-4">
-            <h6><i class="bi bi-palette text-info me-2"></i>Theme</h6>
-            <p class="small text-muted">Switch between light and dark theme for better viewing comfort.</p>
+            <h6><i class="bi bi-palette text-info me-2"></i>{{ _('Theme') }}</h6>
+            <p class="small text-muted">{{ _('Switch between light and dark theme for better viewing comfort.') }}</p>
           </div>
           <div class="col-md-4">
-            <h6><i class="bi bi-grid text-success me-2"></i>Pagination</h6>
-            <p class="small text-muted">Set how many tasks to display per page on the dashboard.</p>
+            <h6><i class="bi bi-grid text-success me-2"></i>{{ _('Pagination') }}</h6>
+            <p class="small text-muted">{{ _('Set how many tasks to display per page on the dashboard.') }}</p>
           </div>
         </div>
       </div>

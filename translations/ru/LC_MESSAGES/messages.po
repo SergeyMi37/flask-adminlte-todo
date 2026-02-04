@@ -527,3 +527,306 @@ msgstr "Создать"
 msgid "Cancel"
 msgstr "Отмена"
 
+#: templates/manage_roles.html:3
+msgid "Role Management"
+msgstr "Управление ролями"
+
+#: templates/manage_roles.html:4
+msgid "Role Management"
+msgstr "Управление ролями"
+
+#: templates/manage_roles.html:5
+msgid "Role Management"
+msgstr "Управление ролями"
+
+#: templates/manage_roles.html:12
+msgid "Roles"
+msgstr "Роли"
+
+#: templates/manage_roles.html:15
+msgid "Add Role"
+msgstr "Добавить роль"
+
+#: templates/manage_roles.html:24
+msgid "Name"
+msgstr "Название"
+
+#: templates/manage_roles.html:25
+msgid "Description"
+msgstr "Описание"
+
+#: templates/manage_roles.html:26 templates/role_form.html:26
+msgid "Actions"
+msgstr "Действия"
+
+#: templates/manage_roles.html:37
+msgid "Edit"
+msgstr "Редактировать"
+
+#: templates/manage_roles.html:41
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/manage_roles.html:40
+msgid "Are you sure you want to delete this role?"
+msgstr "Вы уверены, что хотите удалить эту роль?"
+
+#: templates/role_form.html:3
+msgid "Editing Role"
+msgstr "Редактирование роли"
+
+#: templates/role_form.html:3
+msgid "New Role"
+msgstr "Новая роль"
+
+#: templates/role_form.html:4
+msgid "Editing Role"
+msgstr "Редактирование роли"
+
+#: templates/role_form.html:4
+msgid "New Role"
+msgstr "Новая роль"
+
+#: templates/role_form.html:5
+msgid "Editing Role"
+msgstr "Редактирование роли"
+
+#: templates/role_form.html:5
+msgid "New Role"
+msgstr "Новая роль"
+
+#: templates/role_form.html:12
+msgid "Edit Role"
+msgstr "Редактировать роль"
+
+#: templates/role_form.html:12
+msgid "Create Role"
+msgstr "Создать роль"
+
+#: templates/role_form.html:17
+msgid "Role Name"
+msgstr "Название роли"
+
+#: templates/role_form.html:21
+msgid "Description"
+msgstr "Описание"
+
+#: templates/role_form.html:26
+msgid "Save"
+msgstr "Сохранить"
+
+#: templates/role_form.html:26
+msgid "Create"
+msgstr "Создать"
+
+#: templates/role_form.html:27
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Access denied. Administrator rights required."
+msgstr "Доступ запрещен. Требуются права администратора."
+
+msgid "User with this username already exists"
+msgstr "Пользователь с таким именем уже существует"
+
+msgid "User with this email already exists"
+msgstr "Пользователь с таким email уже существует"
+
+msgid "User created successfully!"
+msgstr "Пользователь создан успешно!"
+
+msgid "User updated successfully!"
+msgstr "Пользователь обновлен успешно!"
+
+msgid "User deleted successfully!"
+msgstr "Пользователь удален успешно!"
+
+msgid "Can't delete yourself!"
+msgstr "Нельзя удалить самого себя!"
+
+msgid "Role with this name already exists"
+msgstr "Роль с таким именем уже существует"
+
+msgid "Role created successfully!"
+msgstr "Роль создана успешно!"
+
+msgid "Role updated successfully!"
+msgstr "Роль обновлена успешно!"
+
+msgid "Role deleted successfully!"
+msgstr "Роль удалена успешно!"
+
+msgid "Can't delete admin role!"
+msgstr "Нельзя удалить роль администратора!"
+
+msgid "Can't delete role that is assigned to users!"
+msgstr "Нельзя удалить роль, которая используется пользователями!"
+
+msgid "Registration"
+msgstr "Регистрация"
+
+msgid "Register a new account"
+msgstr "Зарегистрировать новый аккаунт"
+
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Role {role_name}"
+msgstr "Роль {role_name}"
+
+msgid "Registration successful! You can now log in."
+msgstr "Регистрация успешна! Теперь вы можете войти."
+
+msgid "Invalid username or password"
+msgstr "Неверное имя пользователя или пароль"
+
+msgid "User Options"
+msgstr "Пользовательские опции"
+
+msgid "Current User Settings"
+msgstr "Текущие пользовательские настройки"
+
+msgid "No description"
+msgstr "Без описания"
+
+msgid "Russian"
+msgstr "Русский"
+
+msgid "English"
+msgstr "English"
+
+msgid "Dark"
+msgstr "Темная"
+
+msgid "Light"
+msgstr "Светлая"
+
+msgid "Switch to Russian"
+msgstr "Переключить на русский"
+
+msgid "Switch to English"
+msgstr "Переключить на английский"
+
+msgid "Switch to Dark theme"
+msgstr "Переключить на темную тему"
+
+msgid "Switch to Light theme"
+msgstr "Переключить на светлую тему"
+
+msgid "No user settings found. Start using the application to create settings."
+msgstr "Пользовательские настройки не найдены. Начните использовать приложение, чтобы создать настройки."
+
+msgid "Settings are automatically saved and will be restored when you restart the application or open it in a new browser window."
+msgstr "Настройки автоматически сохраняются и будут восстановлены при перезапуске приложения или открытии в новом окне браузера."
+
+msgid "How Settings Work"
+msgstr "Как работают настройки"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "Choose your preferred interface language. Currently supports Russian and English."
+msgstr "Выберите предпочитаемый язык интерфейса. В настоящее время поддерживаются русский и английский языки."
+
+msgid "Theme"
+msgstr "Тема"
+
+msgid "Switch between light and dark theme for better viewing comfort."
+msgstr "Переключайтесь между светлой и темной темами для лучшего удобства просмотра."
+
+msgid "Pagination"
+msgstr "Пагинация"
+
+msgid "Set how many tasks to display per page on the dashboard."
+msgstr "Установите, сколько задач отображать на странице на панели управления."
+
+msgid "Are you sure you want to delete this todo?"
+msgstr "Вы уверены, что хотите удалить эту задачу?"
+
+msgid "Todo created successfully!"
+msgstr "Задача создана успешно!"
+
+msgid "Todo updated successfully!"
+msgstr "Задача обновлена успешно!"
+
+msgid "Todo deleted successfully!"
+msgstr "Задача удалена успешно!"
+
+msgid "Selected interface language"
+msgstr "Выбранный язык интерфейса"
+
+msgid "User"
+msgstr "Пользователь"
+
+msgid "Administrator"
+msgstr "Администратор"
+
+msgid "I agree to the"
+msgstr "Я согласен с"
+
+msgid "terms"
+msgstr "условиями"
+
+msgid "Register"
+msgstr "Зарегистрироваться"
+
+msgid "I already have an account"
+msgstr "У меня уже есть аккаунт"
+
+msgid "Login"
+msgstr "Вход"
+
+msgid "Sign in to start your session"
+msgstr "Войдите, чтобы начать сессию"
+
+msgid "Remember Me"
+msgstr "Запомнить меня"
+
+msgid "Sign In"
+msgstr "Войти"
+
+msgid "Forgot Password?"
+msgstr "Забыли пароль?"
+
+msgid "User Management"
+msgstr "Управление пользователями"
+
+msgid "Users"
+msgstr "Пользователи"
+
+msgid "Add User"
+msgstr "Добавить пользователя"
+
+msgid "Role"
+msgstr "Роль"
+
+msgid "Creation Date"
+msgstr "Дата создания"
+
+msgid "Are you sure you want to delete this user?"
+msgstr "Вы уверены, что хотите удалить этого пользователя?"
+
+msgid "Editing User"
+msgstr "Редактирование пользователя"
+
+msgid "New User"
+msgstr "Новый пользователь"
+
+msgid "Edit User"
+msgstr "Редактировать пользователя"
+
+msgid "Create User"
+msgstr "Создать пользователя"
+
+msgid "New password (leave empty to not change)"
+msgstr "Новый пароль (оставьте пустым, чтобы не менять)"
+
+msgid "Password"
+msgstr "Пароль"
+
