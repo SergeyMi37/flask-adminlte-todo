@@ -34,7 +34,7 @@
 
 2. **Создайте `.env` файл:**
    ```bash
-   cp .env.example .env
+   cp .env.sample .env
    ```
 
    Отредактируйте `.env` файл:
